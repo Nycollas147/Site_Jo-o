@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Portfólio Acadêmico</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: #1a252f; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .login-card { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 100%; max-width: 400px; text-align: center; }
+        h2 { color: #2c3e50; margin-bottom: 10px; }
+        p { color: #7f8c8d; margin-bottom: 25px; font-size: 0.9rem; }
+        .input-group { margin-bottom: 20px; text-align: left; }
+        label { display: block; color: #34495e; margin-bottom: 5px; font-weight: 600; }
+        input { width: 100%; padding: 12px; border: 2px solid #bdc3c7; border-radius: 6px; font-size: 1rem; outline: none; }
+        input:focus { border-color: #1abc9c; }
+        button { width: 100%; background: #1abc9c; color: white; border: none; padding: 12px; font-size: 1rem; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        button:hover { background: #16a085; }
+        .error { color: #e74c3c; font-size: 0.85rem; margin-top: 15px; display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <h2>Portfólio Acadêmico</h2>
+        <p>Acesse seu painel integrado de disciplinas</p>
+        
+        <div class="input-group">
+            <label for="ra">Registro do Aluno (R.A.)</label>
+            <input type="text" id="ra" placeholder="Ex: 1127204804 SP" required>
+        </div>
+
+        <div class="input-group">
+            <label for="senha">Senha de Acesso</label>
+            <input type="password" id="senha" placeholder="Digite sua senha" required>
+        </div>
+
+        <button onclick="autenticar()">Entrar</button>
+        <div id="msg-erro" class="error">R.A. ou Senha inválidos. Tente novamente.</div>
+    </div>
+
+    <script>
+        function autenticar() {
+            const raInput = document.getElementById('ra').value.trim();
+            const senhaInput = document.getElementById('senha').value;
+            const erro = document.getElementById('msg-erro');
+
+            const raValido = (raInput === "1127204804 SP" || raInput === "1127204804");
+            const senhaValida = (senhaInput === "Josue@2026");
+
+            if (raValido && senhaValida) {
+                localStorage.setItem("aluno_ra", "1127204804 SP");
+                localStorage.setItem("aluno_nome", "Nycollas Galdino");
+                window.location.href = "index.html";
+            } else {
+                erro.style.display = "block";
+            }
+        }
+    </script>
+</body>
+</html>

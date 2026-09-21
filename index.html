@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Portfólio de Atividades</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header com os dados acadêmicos do Nycollas Galdino -->
+    <header style="display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background-color: #2c3e50; color: white;">
+        <div style="text-align: left;">
+            <h1>Portfólio Acadêmico</h1>
+            <p>Registro de atividades e evolução no curso</p>
+        </div>
+        <!-- Painel dinâmico preenchido pelo script.js com o R.A. e Nome -->
+        <div id="info-aluno" style="text-align: right; color: #ecf0f1; font-size: 0.9rem; line-height: 1.4;">
+            <!-- Preenchido automaticamente via JS -->
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Menu Lateral com as 7 Disciplinas do curso -->
+        <nav class="sidebar">
+            <h3>Disciplinas</h3>
+            <ul>
+                <li><button onclick="mostrarMateria('frontend')">Front-End</button></li>
+                <li><button onclick="mostrarMateria('backend')">Back-End</button></li>
+                <li><button onclick="mostrarMateria('versionamento')">Versionamento & Mensageria</button></li>
+                <li><button onclick="mostrarMateria('ia')">Inteligência Artificial</button></li>
+                <li><button onclick="mostrarMateria('multidisciplinar')">Projeto Multidisciplinar</button></li>
+                <li><button onclick="mostrarMateria('mobile')">Programação Mobile</button></li>
+                <li><button onclick="mostrarMateria('banco')">Modelagem de Banco de Dados</button></li>
+            </ul>
+        </nav>
+
+        <!-- Área Central de Conteúdo Dinâmico -->
+        <main class="content" style="flex: 1; padding: 40px; background-color: #fdfdfd;">
+            
+            <!-- Título Dinâmico da Matéria Selecionada -->
+            <div id="cabecalho-materia">
+                <h2>Selecione uma disciplina</h2>
+                <p>Clique em uma das matérias ao lado para carregar os registros de aulas e tarefas semanais.</p>
+            </div>
+
+            <!-- Bloco de Notas para Registro e Upload de Arquivos Reais -->
+            <div id="formulario-registro" style="display: none; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 25px; border: 1px solid #e2e8f0;">
+                <h3 id="titulo-form" style="color: #2c3e50; margin-bottom: 15px; border-bottom: 2px solid #1abc9c; padding-bottom: 5px;">Novo Registro de Aula</h3>
+                
+                <!-- Campo invisível para controlar o ID na Edição -->
+                <input type="hidden" id="reg-id">
+
+                <!-- Input da Semana -->
+                <div style="margin-bottom: 15px;">
+                    <label style="display:block; font-weight:bold; margin-bottom:5px; color: #34495e;">Número da Semana:</label>
+                    <input type="number" id="reg-semana" placeholder="Ex: 1" style="padding: 10px; width: 120px; border: 1px solid #bdc3c7; border-radius: 6px; outline: none; font-size: 1rem;">
+                </div>
+
+                <!-- Bloco de Notas (Textarea) -->
+                <div style="margin-bottom: 15px;">
+                    <label style="display:block; font-weight:bold; margin-bottom:5px; color: #34495e;">Anotações / Descrição do Conteúdo:</label>
+                    <textarea id="reg-descricao" rows="5" placeholder="Digite aqui o resumo do que foi aprendido na aula..." style="width: 100%; padding: 12px; border: 1px solid #bdc3c7; border-radius: 6px; font-family: inherit; font-size: 1rem; resize: vertical; outline: none;"></textarea>
+                </div>
+
+                <!-- Campo de Upload Real de Arquivo -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display:block; font-weight:bold; margin-bottom:5px; color: #34495e;">Anexar Arquivo / Código Fonte da Atividade:</label>
+                    <input type="file" id="reg-arquivo" style="width: 100%; padding: 10px; border: 1px solid #bdc3c7; border-radius: 6px; background-color: #fafafa; outline: none;">
+                    <small id="arquivo-atual-nome" style="display: block; margin-top: 5px; color: #7f8c8d; font-weight: bold;"></small>
+                </div>
+
+                <!-- Botões Dinâmicos de Controle -->
+                <div style="display: flex; gap: 10px;">
+                    <button id="btn-salvar" onclick="salvarNovoRegistro()" style="background: #1abc9c; color: white; border: none; padding: 12px 25px; font-weight: bold; font-size: 1rem; border-radius: 6px; cursor: pointer; transition: 0.3s; box-shadow: 0 2px 4px rgba(26, 188, 156, 0.2);">Salvar no Portfólio</button>
+                    <button id="btn-cancelar" onclick="cancelarEdicao()" style="display: none; background: #95a5a6; color: white; border: none; padding: 12px 25px; font-weight: bold; font-size: 1rem; border-radius: 6px; cursor: pointer; transition: 0.3s;">Cancelar Edição</button>
+                </div>
+            </div>
+
+            <!-- Espaço onde os Cards com as anotações e arquivos surgirão -->
+            <div id="painel-atividades" style="margin-top: 30px;">
+                <!-- Controlado dinamicamente pelo script.js -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Script de controle integrado -->
+    <script src="script.js"></script>
+</body>
+</html>
