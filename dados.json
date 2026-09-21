@@ -1,0 +1,12 @@
+{
+  "front-end": [
+    { "semana": "Semana 1", "titulo": "Conceitos de HTML", "link": "#" },
+    { "semana": "Semana 2", "titulo": "Estilização com CSS", "link": "#" }
+  ],
+  "back-end": [],
+  "versionamento": [],
+  "ia": [],
+  "multidisciplinar": [],
+  "mobile": [],
+  "banco-dados": []
+}
