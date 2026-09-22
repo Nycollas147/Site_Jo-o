@@ -1,4 +1,11 @@
 {
+  "name": "portfolio-academico",
+  "version": "1.0.0",
+  "description": "Meu Portfolio Academico Nycollas Galdino",
+  "main": "index.html",
+  "scripts": {
+    "deploy": "gh-pages -d ."
+  },
   "devDependencies": {
     "gh-pages": "^6.3.0"
   }

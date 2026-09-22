@@ -3,20 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Disciplinas</title>
+    <title>Sistema de Bloco de Notas</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1 id="nome-materia">Carregando...</h1>
-        <a href="index.html" class="btn-voltar">← Voltar ao Início</a>
-    </header>
 
-    <main>
-        <section id="lista-semanas" class="lista-atividades">
-            <!-- As semanas e atividades vão aparecer aqui via JavaScript -->
-        </section>
-    </main>
+    <div class="app-container">
+        
+        <!-- BARRA LATERAL: PERFIL E DISCIPLINAS -->
+        <aside class="sidebar">
+            <!-- Bloco do Aluno (Nome, R.A. e Sair) -->
+            <div class="perfil-aluno">
+                <h3 class="nome-aluno">Nycollas</h3>
+                <div class="ra-container">
+                    <p class="ra-aluno">R.A.: 1127204804SP</p>
+                    <a href="login.html" class="btn-sair">Sair</a>
+                </div>
+            </div>
+
+            <h2 class="sidebar-titulo">DISCIPLINAS</h2>
+            <nav class="menu-disciplinas">
+                <button class="btn-materia active" data-materia="front-end">Front-End</button>
+                <button class="btn-materia" data-materia="back-end">Back-End</button>
+                <button class="btn-materia" data-materia="modelagem">Modelagem de Dados</button>
+                <button class="btn-materia" data-materia="versionamento">Versionamento & Mensageria</button>
+                <button class="btn-materia" data-materia="ia">Inteligência Artificial</button>
+                <button class="btn-materia" data-materia="multidisciplinar">Projeto Multidisciplinar</button>
+                <button class="btn-materia" data-materia="mobile">Programação Mobile</button>
+            </nav>
+        </aside>
+
+        <!-- CONTEÚDO PRINCIPAL: DINÂMICO -->
+        <main class="conteudo-principal" id="conteudo-dinamico">
+            <!-- O JavaScript preenche automaticamente as semanas 15 a 21 aqui dentro -->
+        </main>
+    </div>
 
     <script src="script.js"></script>
 </body>

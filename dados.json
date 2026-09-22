@@ -1,12 +1,69 @@
 {
-  "front-end": [
-    { "semana": "Semana 1", "titulo": "Conceitos de HTML", "link": "#" },
-    { "semana": "Semana 2", "titulo": "Estilização com CSS", "link": "#" }
-  ],
-  "back-end": [],
-  "versionamento": [],
-  "ia": [],
-  "multidisciplinar": [],
-  "mobile": [],
-  "banco-dados": []
+  "frontend": {
+    "titulo": "Front-End",
+    "semanas": [
+      {
+        "id": 1,
+        "numero": 1,
+        "descricao": "Estudo sobre a semântica do HTML5, estruturação de tags principais e boas práticas de acessibilidade na construção de portfólios acadêmicos.",
+        "arquivo": "index.html",
+        "caminho": "materias/front-end/semana1/tarefa1.html"
+      },
+      {
+        "id": 2,
+        "numero": 2,
+        "descricao": "Introdução ao CSS estruturado, trabalhando com propriedades de cores, fontes, bordas e alinhamentos básicos de elementos.",
+        "arquivo": "style.css",
+        "caminho": "#"
+      }
+    ]
+  },
+  "backend": {
+    "titulo": "Back-End",
+    "semanas": [
+      {
+        "id": 3,
+        "numero": 1,
+        "descricao": "Introdução ao ecossistema Node.js, gerenciamento de pacotes com NPM e criação de um servidor HTTP inicial interpretando requisições básicas.",
+        "arquivo": "server.js",
+        "caminho": "#"
+      }
+    ]
+  },
+  "versionamento": {
+    "titulo": "Versionamento de Código e Sistemas de Mensageria",
+    "semanas": [
+      {
+        "id": 4,
+        "numero": 1,
+        "descricao": "Configuração inicial do Git no computador, controle de chaves SSH no perfil do GitHub e comandos fundamentais de fluxo acadêmico (add, commit, push).",
+        "arquivo": ".gitignore",
+        "caminho": "#"
+      }
+    ]
+  },
+  "ia": {
+    "titulo": "Inteligência Artificial",
+    "semanas": [
+      {
+        "id": 5,
+        "numero": 1,
+        "descricao": "Conceitos teóricos sobre aprendizado de máquina, engenharia de prompts e análise de impacto ético na automação de processos de desenvolvimento.",
+        "arquivo": "prompt.txt",
+        "caminho": "#"
+      }
+    ]
+  },
+  "multidisciplinar": {
+    "titulo": "Projeto Multidisciplinar",
+    "semanas": []
+  },
+  "mobile": {
+    "titulo": "Programação Mobile",
+    "semanas": []
+  },
+  "banco": {
+    "titulo": "Modelagem de Banco de Dados",
+    "semanas": []
+  }
 }

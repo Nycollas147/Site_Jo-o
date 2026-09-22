@@ -1,3 +1,6 @@
+/* -------------------------------------------
+   1. CONFIGURAÇÕES GERAIS E RESETS
+------------------------------------------- */
 * {
     margin: 0;
     padding: 0;
@@ -6,58 +9,393 @@
 }
 
 body {
-    background-color: #f4f7f6;
-    color: #333;
+    background-color: #f7f9fc;
+    color: #333333;
+    min-height: 100vh;
 }
 
-.container {
+/* Container que divide a tela em Barra Lateral + Conteúdo */
+.app-container {
     display: flex;
-    min-height: calc(100vh - 74px);
+    min-height: 100vh;
 }
 
+/* -------------------------------------------
+   2. BARRA LATERAL (PERFIL E DISCIPLINAS)
+------------------------------------------- */
 .sidebar {
-    width: 320px;
+    width: 280px;
     background-color: #ffffff;
-    padding: 25px;
-    border-right: 1px solid #e0e0e0;
+    border-right: 1px solid #e2e8f0;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
 }
 
-.sidebar h3 {
-    color: #2c3e50;
-    margin-bottom: 20px;
-    font-size: 1.2rem;
+/* Bloco de identificação do Aluno */
+.perfil-aluno {
+    background-color: #f8fafc;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 25px;
+}
+
+.nome-aluno {
+    font-size: 1.1rem;
     font-weight: 700;
-    border-bottom: 2px solid #1abc9c;
-    padding-bottom: 8px;
+    color: #1e293b;
+    margin-bottom: 4px;
 }
 
-.sidebar ul {
-    list-style: none;
+/* Alinhamento do R.A com o botão Sair */
+.ra-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4px;
 }
 
-.sidebar ul li {
+.ra-aluno {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #64748b;
+}
+
+/* Estilo do botão Sair */
+.btn-sair {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #ef4444;
+    text-decoration: none;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.btn-sair:hover {
+    background-color: #fee2e2;
+}
+
+/* Título da seção de disciplinas */
+.sidebar-titulo {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 25px;
+    padding-left: 10px;
+}
+
+.menu-disciplinas {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Botões da Barra Lateral */
+.btn-materia {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 14px 16px;
+    border-radius: 8px;
+    text-align: left;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-materia:hover {
+    background-color: #f1f5f9;
+    color: #1e293b;
+}
+
+/* Matéria selecionada no momento */
+.btn-materia.active {
+    background-color: #eef2ff;
+    color: #1d4ed8;
+    font-weight: 600;
+}
+
+/* -------------------------------------------
+   3. ÁREA DE CONTEÚDO PRINCIPAL
+------------------------------------------- */
+.conteudo-principal {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.materia-container {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 35px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    width: 100%;
+    max-width: 1100px;
+}
+
+.titulo-materia {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 15px;
+}
+
+.subtitulo-cronograma {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin-bottom: 25px;
+}
+
+/* -------------------------------------------
+   4. GRID DE CARDS DAS SEMANAS
+------------------------------------------- */
+.grid-semanas {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+    margin-top: 10px;
+}
+
+.card-semana {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 150px;
+}
+
+.card-semana:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    border-color: #cbd5e1;
+}
+
+/* Destaque sutil para a semana atual */
+.card-semana.ativa {
+    border-color: #bfdbfe;
+    background-color: #fbfcfe;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 12px;
 }
 
-.sidebar button {
-    width: 100%;
-    background-color: #f8f9fa;
-    border: 1px solid #e2e8f0;
-    color: #34495e;
-    text-align: left;
-    padding: 15px;
-    font-size: 0.95rem;
+.card-header h3 {
+    font-size: 1.1rem;
     font-weight: 600;
-    cursor: pointer;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-    transition: all 0.25s ease;
+    color: #1e293b;
 }
 
-.sidebar button:hover {
-    background-color: #1abc9c;
-    color: white;
-    border-color: #1abc9c;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(26, 188, 156, 0.2);
+.preview-texto {
+    font-size: 0.85rem;
+    color: #64748b;
+    line-height: 1.4;
+}
+
+/* Badges indicadoras de status */
+.badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.status-salvo {
+    background-color: #dcfce7;
+    color: #15803d;
+}
+
+.status-atual {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+}
+
+.status-vazio {
+    background-color: #f1f5f9;
+    color: #64748b;
+}
+
+/* Botões internos dos cards (Editar/Excluir) */
+.btn-card-editar, .btn-card-excluir {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-card-editar {
+    background-color: #f1f5f9;
+    color: #334155;
+}
+
+.btn-card-editar:hover {
+    background-color: #e2e8f0;
+}
+
+.btn-card-excluir {
+    background-color: #fee2e2;
+    color: #ef4444;
+}
+
+.btn-card-excluir:hover {
+    background-color: #fca5a5;
+}
+
+/* -------------------------------------------
+   5. FORMULÁRIO DE REGISTRO / EDIÇÃO
+------------------------------------------- */
+#form-notas {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.grupo-campo {
+    width: 100%;
+}
+
+/* Caixa de Texto */
+#anotacoes-textarea {
+    width: 100%;
+    height: 200px;
+    padding: 15px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    resize: vertical;
+    outline: none;
+    color: #333333;
+}
+
+#anotacoes-textarea:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Container de Upload de Arquivo */
+.upload-container {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    background-color: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.upload-container:hover {
+    background-color: #f1f5f9;
+}
+
+.upload-texto {
+    font-size: 0.9rem;
+    color: #64748b;
+}
+
+/* Botões de Ação do Formulário */
+#btn-salvar, #btn-voltar {
+    padding: 12px 24px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#btn-salvar {
+    background-color: #1e293b;
+    color: #ffffff;
+}
+
+#btn-salvar:hover {
+    background-color: #0f172a;
+}
+
+#btn-voltar {
+    color: #ffffff;
+}
+
+#btn-voltar:hover {
+    opacity: 0.9;
+}
+/* ==========================================================================
+   SEÇÃO: GERENCIAMENTO DE DADOS (BOTÕES IDÊNTICOS AO PRINT)
+   ========================================================================== */
+.secao-gerenciamento-dados {
+    margin-top: auto; /* Empurra os botões para o final da barra lateral */
+    display: flex;
+    flex-direction: column;
+    gap: 12px;       /* Espaçamento vertical exato entre os botões */
+    padding-top: 24px;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* Base de estilo unificada para todos os 3 botões */
+.btn-dados, .btn-sair-sistema {
+    width: 100%;
+    padding: 14px 20px;       /* Altura e preenchimento interno confortável */
+    font-size: 1.1rem;        /* Tamanho de fonte destacado */
+    font-weight: 500;         /* Peso de fonte médio e limpo */
+    background-color: #ffffff;/* Fundo branco padrão */
+    border-radius: 8px;       /* Curvatura sutil de canto idêntica à imagem */
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease-in-out;
+}
+
+/* 1. Botão Exportar Backup (Borda cinza claro, texto escuro) */
+.btn-dados.exportar {
+    color: #000000;
+    border: 1px solid #d1d5db;
+}
+
+.btn-dados.exportar:hover {
+    background-color: #f8fafc;
+    border-color: #9ca3af;
+}
+
+/* 2. Botão Importar Backup (Borda verde clara, texto verde) */
+.btn-dados.importar {
+    color: #10b981;
+    background-color: #fbfdfb; /* Tom sutil esverdeado ao fundo */
+    border: 1px solid #a7f3d0;
+}
+
+.btn-dados.importar:hover {
+    background-color: #f0fdf4;
+    border-color: #34d399;
+}
+
+/* 3. Botão Sair do Sistema (Borda vermelha fina, texto vermelho) */
+.btn-sair-sistema {
+    color: #ef4444;
+    border: 1px solid #fca5a5;
+    margin-top: 4px; /* Pequeno distanciamento extra opcional */
+}
+
+.btn-sair-sistema:hover {
+    background-color: #fef2f2;
+    border-color: #f87171;
 }

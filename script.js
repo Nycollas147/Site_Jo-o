@@ -1,190 +1,197 @@
-// =========================================================================
-// 1. SISTEMA DE SEGURANÇA E VERIFICAÇÃO DE SESSÃO
-// =========================================================================
-document.addEventListener("DOMContentLoaded", () => {
-    const painelAluno = document.getElementById("info-aluno");
-    
-    if (painelAluno) {
-        const raSalvo = localStorage.getItem("aluno_ra");
-        const nomeSalvo = localStorage.getItem("aluno_nome");
+// 1. BANCO DE DADOS LOCAL COMPARTILHADO (Separado por R.A. de Aluno)
+let bancoDeDadosGeral = JSON.parse(localStorage.getItem('registro_notas_app_multi')) || {};
 
-        if (!raSalvo) {
-            window.location.href = "login.html";
-            return;
+// Captura as informações do aluno que realizou o login
+const raLogado = localStorage.getItem('aluno_logado_ra') || "visitante";
+const nomeLogado = localStorage.getItem('aluno_logado_nome') || "Aluno";
+
+// Garante que o usuário atual tenha um espaço próprio e isolado no banco de dados
+if (!bancoDeDadosGeral[raLogado]) {
+    bancoDeDadosGeral[raLogado] = {
+        "front-end": {},
+        "back-end": {},
+        "modelagem": {},
+        "versionamento": {},
+        "ia": {},
+        "multidisciplinar": {},
+        "mobile": {}
+    };
+}
+
+// Atalho para manipular diretamente as notas do aluno logado no momento
+let bancoDeDados = bancoDeDadosGeral[raLogado];
+
+// 2. MAPEAMENTO DE ELEMENTOS DA TELA (DOM)
+const botoesMaterias = document.querySelectorAll('.btn-materia');
+const conteudoDinamico = document.getElementById('conteudo-dinamico');
+
+// Variável para controlar a matéria selecionada
+let materiaAtiva = "front-end";
+
+// 3. FUNÇÃO: RENDERIZA OS CARDS DA SEMANA 15 ATÉ A 21
+function renderizarTela(materiaId, nomeMateria) {
+    materiaAtiva = materiaId;
+
+    // Gera de forma inteligente a lista de semanas solicitadas (15 até 21)
+    const semanasDisponiveis = Array.from({ length: 7 }, (_, i) => 15 + i);
+
+    // Gerando o HTML dos cards dinamicamente
+    const cardsHTML = semanasDisponiveis.map(numSemana => {
+        const chaveSemana = "Semana " + numSemana;
+        const textoSalvo = bancoDeDados[materiaId]?.[chaveSemana] || "";
+        const temRegistro = textoSalvo.trim().length > 0;
+        
+        // Define as classes e textos das badges de status
+        let classeBadge = 'status-vazio';
+        let textoBadge = 'Vazio';
+
+        if (temRegistro) {
+            classeBadge = 'status-salvo';
+            textoBadge = 'Com Registro';
+        } else if (numSemana === 15) {
+            classeBadge = 'status-atual';
+            textoBadge = 'Atual';
         }
 
-        painelAluno.innerHTML = `
-            <p><strong>Aluno:</strong> ${nomeSalvo}</p>
-            <p><strong>R.A.:</strong> ${raSalvo}</p>
-            <a href="#" onclick="fazerLogout()" style="color: #e74c3c; text-decoration: none; font-size: 0.85rem; font-weight: bold; border-bottom: 1px dashed #e74c3c;">[ Sair / Logout ]</a>
+        const classeCardAtiva = numSemana === 15 ? 'card-semana ativa' : 'card-semana';
+        const resumoTexto = temRegistro ? (textoSalvo.substring(0, 45) + '...') : 'Clique para adicionar seu registro...';
+
+        // Botão de excluir só aparece se houver um registro salvo
+        const botaoExcluirHTML = temRegistro 
+            ? `<button class="btn-card-excluir" onclick="event.stopPropagation(); excluirRegistro('${chaveSemana}')">Excluir</button>` 
+            : '';
+
+        return `
+            <div class="${classeCardAtiva}" onclick="abrirFormularioRegistro('${chaveSemana}')">
+                <div class="card-header">
+                    <h3>${chaveSemana}</h3>
+                    <span class="badge ${classeBadge}">${textoBadge}</span>
+                </div>
+                <p class="preview-texto">${resumoTexto}</p>
+                <div class="card-acoes" style="display: flex; gap: 8px; margin-top: 15px;">
+                    <button class="btn-card-editar">Editar</button>
+                    ${botaoExcluirHTML}
+                </div>
+            </div>
         `;
+    }).join('');
+
+    // Insere o container estruturado de volta na página
+    conteudoDinamico.innerHTML = `
+        <div class="materia-container">
+            <h1 class="titulo-materia">Bloco de Notas: ${nomeMateria}</h1>
+            <p class="subtitulo-cronograma">Cronograma da Atividade de <strong>${nomeLogado}</strong>:</p>
+            <div class="grid-semanas">
+                ${cardsHTML}
+            </div>
+        </div>
+    `;
+}
+
+// 4. FUNÇÃO: ABRE A ÁREA DE TEXTO PARA INSERIR OU EDITAR O REGISTRO
+function abrirFormularioRegistro(semanaNome) {
+    const textoAtual = bancoDeDados[materiaAtiva]?.[semanaNome] || "";
+    const nomeMateriaFormatado = document.querySelector('.titulo-materia').textContent;
+
+    conteudoDinamico.innerHTML = `
+        <div class="materia-container">
+            <h1 class="titulo-materia">${nomeMateriaFormatado}</h1>
+            <p class="subtitulo-cronograma">Editando: <strong>${semanaNome}</strong></p>
+
+            <form id="form-notas" onsubmit="salvarRegistro(event, '${semanaNome}')">
+                <div class="grupo-campo">
+                    <textarea 
+                        id="anotacoes-textarea" 
+                        name="anotacoes" 
+                        placeholder="Digite suas anotações da aula aqui..."
+                    >${textoAtual}</textarea>
+                </div>
+
+                <div class="grupo-campo">
+                    <label for="arquivo-input" class="upload-container">
+                        <span class="upload-texto">Clique para anexar um documento ou arquivo</span>
+                        <input type="file" id="arquivo-input" name="arquivo" hidden>
+                    </label>
+                </div>
+
+                <div class="botoes-acoes" style="display: flex; gap: 10px;">
+                    <button type="submit" id="btn-salvar">Salvar Mudanças</button>
+                    <button type="button" id="btn-voltar" onclick="voltarParaSemanas()" style="background-color: #6c757d;">Voltar</button>
+                </div>
+            </form>
+        </div>
+    `;
+}
+
+// 5. FUNÇÃO: SALVA O TEXTO DIGITADO NO LOCALSTORAGE NO PERFIL CERTO
+function salvarRegistro(event, semanaNome) {
+    event.preventDefault();
+    
+    const textoDigitado = document.getElementById('anotacoes-textarea').value;
+
+    if (!bancoDeDados[materiaAtiva]) {
+        bancoDeDados[materiaAtiva] = {};
     }
+
+    // Grava localmente no perfil do aluno atual
+    bancoDeDados[materiaAtiva][semanaNome] = textoDigitado;
+    
+    // Atualiza a árvore global de dados e joga no LocalStorage
+    bancoDeDadosGeral[raLogado] = bancoDeDados;
+    localStorage.setItem('registro_notas_app_multi', JSON.stringify(bancoDeDadosGeral));
+
+    alert(`Registro da ${semanaNome} salvo com sucesso!`);
+    voltarParaSemanas();
+}
+
+// 6. FUNÇÃO: EXCLUI O REGISTRO DA SEMANA
+function excluirRegistro(semanaNome) {
+    const confirmar = confirm(`Tem certeza que deseja apagar o registro da ${semanaNome}?`);
+    
+    if (confirmar) {
+        if (bancoDeDados[materiaAtiva] && bancoDeDados[materiaAtiva][semanaNome]) {
+            // Remove o registro específico do usuário logado
+            delete bancoDeDados[materiaAtiva][semanaNome];
+            
+            // Sincroniza e salva o banco global
+            bancoDeDadosGeral[raLogado] = bancoDeDados;
+            localStorage.setItem('registro_notas_app_multi', JSON.stringify(bancoDeDadosGeral));
+            
+            voltarParaSemanas();
+        }
+    }
+}
+
+// 7. FUNÇÃO: VOLTA PARA A VISUALIZAÇÃO DOS CARDS
+function voltarParaSemanas() {
+    const botaoAtivo = document.querySelector('.btn-materia.active');
+    renderizarTela(materiaAtiva, botaoAtivo ? botaoAtivo.textContent : "Front-End");
+}
+
+// 8. EVENT LISTENERS: CLIQUE NAS DISCIPLINAS DA BARRA LATERAL
+botoesMaterias.forEach(botao => {
+    botao.addEventListener('click', (e) => {
+        botoesMaterias.forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+
+        const materiaId = e.target.getAttribute('data-materia');
+        const nomeMateria = e.target.textContent;
+
+        renderizarTela(materiaId, nomeMateria);
+    });
 });
 
-function fazerLogout() {
-    localStorage.clear();
-    window.location.href = "login.html";
-}
+// 9. ATUALIZAÇÃO VISUAL DO PERFIL DO ALUNO LOGADO NA SIDEBAR
+function carregarPerfilDoAluno() {
+    const elNome = document.getElementById('nome-usuario-sidebar');
+    const elRa = document.getElementById('ra-usuario-sidebar');
 
-let materiaAtiva = "";
-
-// =========================================================================
-// 2. BANCO DE DADOS INICIAL LOCAL (LOCALSTORAGE)
-// =========================================================================
-const databaseInicial = {
-    frontend: { titulo: "Front-End", semanas: [] },
-    backend: { titulo: "Back-End", semanas: [] },
-    versionamento: { titulo: "Versionamento de Código e Sistemas de Mensageria", semanas: [] },
-    ia: { titulo: "Inteligência Artificial", semanas: [] },
-    multidisciplinar: { titulo: "Projeto Multidisciplinar", semanas: [] },
-    mobile: { titulo: "Programação Mobile", semanas: [] },
-    banco: { titulo: "Modelagem de Banco de Dados", semanas: [] }
-};
-
-if (!localStorage.getItem("banco_portfolio")) {
-    localStorage.setItem("banco_portfolio", JSON.stringify(databaseInicial));
-}
-
-// =========================================================================
-// 3. MOTORES DE ATIVIDADES, INTERAÇÃO, EDIÇÃO E EXCLUSÃO
-// =========================================================================
-function mostrarMateria(materiaKey) {
-    materiaAtiva = materiaKey;
-    cancelarEdicao(); // Limpa qualquer edição pendente ao trocar de matéria
-    
-    const bancoTotal = JSON.parse(localStorage.getItem("banco_portfolio"));
-    const dados = bancoTotal[materiaKey];
-
-    if (!dados) return;
-
-    document.getElementById('cabecalho-materia').innerHTML = `<h2>Disciplina: ${dados.titulo}</h2>`;
-    document.getElementById('formulario-registro').style.display = "block";
-
-    atualizarListaTela(dados);
-}
-
-function atualizarListaTela(dados) {
-    const painel = document.getElementById('painel-atividades');
-    let htmlSemanas = "";
-
-    if (!dados.semanas || dados.semanas.length === 0) {
-        htmlSemanas = `<p style="color: #7f8c8d; font-style: italic;">Nenhum registro ou bloco de notas criado para esta matéria.</p>`;
-    } else {
-        // Organiza os cards criados seguindo a ordem das semanas de forma crescente
-        dados.semanas.sort((a, b) => a.numero - b.numero);
-
-        dados.semanas.forEach(sem => {
-            htmlSemanas += `
-                <div class="semana-card" style="position: relative; background: white; border-left: 5px solid #1abc9c; padding: 20px; margin-top: 20px; margin-bottom: 20px; border-radius: 6px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); border: 1px solid #e2e8f0;">
-                    <!-- Botões de Ação Dinâmicos -->
-                    <div style="position: absolute; top: 15px; right: 15px; display: flex; gap: 10px;">
-                        <button onclick="prepararEdicao(${sem.id})" style="background: none; border: none; color: #3498db; font-weight: bold; cursor: pointer; font-size: 0.85rem;">[Editar]</button>
-                        <button onclick="deletarRegistro(${sem.id})" style="background: none; border: none; color: #e74c3c; font-weight: bold; cursor: pointer; font-size: 0.85rem;">[Excluir]</button>
-                    </div>
-                    
-                    <h3>Registro Acadêmico - Semana ${sem.numero}</h3>
-                    <p style="margin: 10px 0; white-space: pre-wrap; background: #fdfdfd; padding: 10px; border-radius: 4px; border: 1px solid #eee; color: #555;">${sem.descricao}</p>
-                    ${sem.arquivo ? `<p style="font-size: 0.9rem; color: #2c3e50;">📂 <strong>Arquivo Anexado:</strong> <span style="color:#1abc9c">\${sem.arquivo}</span></p>` : ''}
-                </div>
-            `;
-        });
+    if (elNome && elRa) {
+        elNome.textContent = nomeLogado;
+        elRa.textContent = "R.A.: " + raLogado;
     }
-    painel.innerHTML = htmlSemanas;
 }
 
-// SALVAR NOVO OU ATUALIZAR UM REGISTRO EXISTENTE
-function salvarNovoRegistro() {
-    const idExistente = document.getElementById('reg-id').value;
-    const numSemana = document.getElementById('reg-semana').value.trim();
-    const descricao = document.getElementById('reg-descricao').value.trim();
-    const inputArquivo = document.getElementById('reg-arquivo');
-
-    if (!numSemana || !descricao) {
-        alert("Por favor, preencha o número da semana e as anotações do registro!");
-        return;
-    }
-
-    const bancoTotal = JSON.parse(localStorage.getItem("banco_portfolio"));
-    let nomeArquivo = "";
-
-    // Pega com segurança o nome do arquivo selecionado pelo componente upload
-    if (inputArquivo && inputArquivo.files.length > 0) {
-        nomeArquivo = inputArquivo.files[0].name;
-    }
-
-    if (idExistente) {
-        // --- PROCESSO DE EDIÇÃO ---
-        const registro = bancoTotal[materiaAtiva].semanas.find(sem => sem.id == idExistente);
-        if (registro) {
-            registro.numero = parseInt(numSemana);
-            registro.descricao = descricao;
-            // Se o usuário não escolheu outro arquivo, mantém o anexo original
-            if (nomeArquivo !== "") {
-                registro.arquivo = nomeArquivo;
-            }
-        }
-    } else {
-        // --- PROCESSO DE CRIAÇÃO ---
-        bancoTotal[materiaAtiva].semanas.push({
-            id: Date.now(),
-            numero: parseInt(numSemana),
-            descricao: descricao,
-            arquivo: nomeArquivo
-        });
-    }
-
-    localStorage.setItem("banco_portfolio", JSON.stringify(bancoTotal));
-    cancelarEdicao();
-    atualizarListaTela(bancoTotal[materiaAtiva]);
-}
-
-// CAPTURA OS DADOS DO CARD E JOGA NO BLOCO DE NOTAS PARA PODER ALTERAR
-function prepararEdicao(idRegistro) {
-    const bancoTotal = JSON.parse(localStorage.getItem("banco_portfolio"));
-    const registro = bancoTotal[materiaAtiva].semanas.find(sem => sem.id == idRegistro);
-
-    if (!registro) return;
-
-    // Devolve as informações para os campos de digitação
-    document.getElementById('reg-id').value = registro.id;
-    document.getElementById('reg-semana').value = registro.numero;
-    document.getElementById('reg-descricao').value = registro.descricao;
-    document.getElementById('arquivo-atual-nome').innerText = registro.arquivo ? `Arquivo salvo: ${registro.arquivo}` : "";
-
-    // Modifica a interface visual informando a alteração
-    document.getElementById('titulo-form').innerText = "Editando Registro de Aula";
-    document.getElementById('btn-salvar').innerText = "Atualizar Registro";
-    document.getElementById('btn-cancelar').style.display = "block";
-    
-    // Move a tela de forma automática até o formulário do bloco de notas
-    document.getElementById('formulario-registro').scrollIntoView({ behavior: 'smooth' });
-}
-
-// RESETAR E LIMPAR O FORMULÁRIO DO BLOCO DE NOTAS
-function cancelarEdicao() {
-    document.getElementById('reg-id').value = "";
-    document.getElementById('reg-semana').value = "";
-    document.getElementById('reg-descricao').value = "";
-    document.getElementById('reg-arquivo').value = "";
-    document.getElementById('arquivo-atual-nome').innerText = "";
-
-    document.getElementById('titulo-form').innerText = "Novo Registro de Aula";
-    document.getElementById('btn-salvar').innerText = "Salvar no Portfólio";
-    document.getElementById('btn-cancelar').style.display = "none";
-}
-
-// APAGAR UM CARD ESPECÍFICO
-function deletarRegistro(idRegistro) {
-    if (!confirm("Tem certeza que deseja apagar este registro permanentemente?")) return;
-
-    const bancoTotal = JSON.parse(localStorage.getItem("banco_portfolio"));
-    bancoTotal[materiaAtiva].semanas = bancoTotal[materiaAtiva].semanas.filter(sem => sem.id !== idRegistro);
-    localStorage.setItem("banco_portfolio", JSON.stringify(bancoTotal));
-
-    // Se apagar o item enquanto ele estava sendo editado, limpa o bloco
-    if(document.getElementById('reg-id').value == idRegistro) {
-        cancelarEdicao();
-    }
-
-    atualizarListaTela(bancoTotal[materiaAtiva]);
-}
+// Inicializações padrão ao abrir a página
+carregarPerfilDoAluno();
+renderizarTela("front-end", "Front-End");
